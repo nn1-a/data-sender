@@ -1,23 +1,25 @@
 name: Go
-on: [push]
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
 jobs:
 
   build:
-    name: Build
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
+    - uses: actions/checkout@v2
 
-    - name: Set up Go 1.13
-      uses: actions/setup-go@v1
+    - name: Set up Go
+      uses: actions/setup-go@v2
       with:
-        go-version: 1.13
-      id: go
+        go-version: 1.15
 
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2
+    - name: Build
+      run: go build -v ./...
 
-    - name: Build Windows
-      run: env GOOS=windows GOARCH=amd64 go build -v .
-    
-    - name: Build Linux
-      run: env GOOS=linux GOARCH=amd64 go build -v .
+    - name: Test
+      run: go test -v ./...
